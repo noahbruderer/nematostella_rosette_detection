@@ -9,7 +9,7 @@ A comprehensive Snakemake workflow for automated rosette detection in biological
 ```bash
 # Clone the repository
 git clone <repository-url>
-cd rosette_paper
+cd nematostella_rosette_detection
 
 # Install dependencies
 poetry install --no-root
