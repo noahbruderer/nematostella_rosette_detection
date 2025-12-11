@@ -17,7 +17,7 @@ data
 !config/curated_rosette_metadata.tsv
 file_structures
 *.txt
-*.md
+
 *.lock
 debug_plots
 paper.md
