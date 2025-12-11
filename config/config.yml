@@ -1,0 +1,16 @@
+# -----------------------------------------------------------------
+# STATIC INPUTS (Entry Points 2 & 3)
+# -----------------------------------------------------------------
+segmentation_training_dir: "/Volumes/FELLES/SENTRE/SARS/Sars S12/Ines/segmentation project/timeseries/2_initial_masks_untrained_model_R1_R2/Timepoint_experiment_replicate_all"
+rosette_annotation_dir: "/Volumes/FELLES/SENTRE/SARS/Sars S12/Ines/segmentation project/timeseries/4_manually_annotated_rosettes_training_dataset"
+human_curated_rosette_data_root: "/Volumes/FELLES/SENTRE/SARS/Sars S12/Ines/segmentation project"
+
+# -----------------------------------------------------------------
+# DYNAMIC INPUTS (Entry Points 1 & 4)
+# -----------------------------------------------------------------
+sample_metadata_file: "config/sample_metadata.tsv"
+
+# --- Data Locations ---
+timeseries_raw_root: "/Volumes/FELLES/SENTRE/SARS/Sars S12/Ines/segmentation project/timeseries/1_raw"
+inhibitor_raw_root: "/Volumes/FELLES/SENTRE/SARS/Sars S12/Ines/segmentation project/inhibitors/1_raw"
+constant_fed_raw_root: "/Volumes/FELLES/SENTRE/SARS/Sars S12/Ines/segmentation project/constant_fed"

@@ -1,0 +1,119 @@
+# Model Training Module Configuration
+# =====================================
+
+module: model_training
+description: "Train geometric rosette detection model using Attention UNet"
+
+# Input/Output Paths (using template variables from global config)
+inputs:
+  training_data_dir: "{global[output_base]}/results/training_data_preparation"
+  
+outputs:
+  output_dir: "{global[output_base]}/results/model_training"
+  model_dir: "{global[output_base]}/results/model_training/models"
+  log_dir: "{global[output_base]}/logs/model_training"
+
+# Model Parameters
+model:
+  architecture: "attention_unet"
+  use_intensity: false  # Geometric-only model
+  patch_size: 512
+  num_classes: 1  # Binary rosette detection
+  
+# Default Training Parameters (can be overridden per experiment)
+default_training:
+  num_epochs: 100  # Default number of epochs
+  batch_size: 4
+  learning_rate: 0.001
+  patience: 15  # Early stopping patience
+  val_split: 0.2  # 20% of data for validation
+  seed: 42  # Reproducibility
+  num_workers: 4  # DataLoader workers
+  pin_memory: false  # GPU memory optimization
+  
+  # Default data augmentation settings (can be overridden per experiment)
+  augmentation:
+    horizontal_flip: 0.5
+    vertical_flip: 0.5
+    rotation: 0.5
+    elastic_transform: 0.25
+    affine_transform: 0.5
+    coarse_dropout: 0.2
+
+# Experiment Matrix - Define all experiments you want to run
+experiments:
+  # - name: "baseline_test"
+  #   description: "Quick test run - 1 epoch baseline"
+  #   num_epochs: 1
+  #   learning_rate: 0.001
+  #   batch_size: 4
+    
+  # - name: "baseline_full"
+  #   description: "Full baseline training"
+  #   num_epochs: 100
+  #   learning_rate: 0.001
+  #   batch_size: 4
+
+  - name: "champion_baseline"
+    description: "The current best-performing setup (low LR, small batch)."
+    num_epochs: 100
+    learning_rate: 0.0001
+    batch_size: 4
+    
+  - name: "champion_hard_augmentation"
+    description: "The winning setup combined with a harder augmentation strategy."
+    num_epochs: 100
+    learning_rate: 0.0001  # The winning LR
+    batch_size: 4          # The winning batch size
+    augmentation:
+      horizontal_flip: 0.5
+      vertical_flip: 0.5
+      rotation: 0.5
+      elastic_transform: 0.4  # Increased probability
+      affine_transform: 0.6   # Increased probability
+      coarse_dropout: 0.3     # Increased probability
+
+  # - name: "aggressive_regularization_test"
+  #   description: "Quick test of stronger data augmentation"
+  #   num_epochs: 30          # Set to 3 epochs
+  #   learning_rate: 0.0001
+  #   batch_size: 8
+  #   augmentation:
+  #     horizontal_flip: 0.5
+  #     vertical_flip: 0.5
+  #     rotation: 0.5
+  #     elastic_transform: 0.5 
+  #     affine_transform: 0.75
+  #     coarse_dropout: 0.3
+      
+  # - name: "cosine_annealing_lr_test"
+  #   description: "Quick test of the cosine annealing learning rate scheduler"
+  #   num_epochs: 30          # Set to 3 epochs
+  #   learning_rate: 0.001
+  #   batch_size: 8
+
+# Execution environment
+environment:
+  poetry_project: "geometric_rosette_model"
+  main_script: "unet_attention_no_intensity.py"
+  python_version: ">=3.11,<3.14"
+
+# Resource requirements
+resources:
+  threads: "{global[num_workers]}"
+  memory_gb: 38
+  time_limit_hours: 12
+  gpu_required: true
+
+# Logging configuration
+logging:
+  level: "{global[log_level]}"
+  save_training_plots: true
+  save_model_checkpoints: true
+
+# Output file patterns
+output_patterns:
+  best_model: "best_model.pth"
+  training_config: "config.json"
+  training_plots: "training_plots.png"
+  training_log: "training.log"

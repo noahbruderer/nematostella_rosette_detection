@@ -1,0 +1,31 @@
+training_data/*
+rosette_p_data_analysis_nb.pdf
+paper.html
+.snakemake/*
+.logs/*
+*logs*
+results*
+snake.out
+image_segmentation_old
+_archive*
+napari*
+data*
+libs/
+data
+# Allow essential metadata files
+!config/sample_metadata.tsv
+!config/curated_rosette_metadata.tsv
+file_structures
+*.txt
+*.md
+*.lock
+debug_plots
+paper.md
+
+# Personal/sensitive paths (avoid hardcoded paths)
+*.pth
+**/best_model.pth
+.venv/
+**/.venv/
+__pycache__/
+**/__pycache__/

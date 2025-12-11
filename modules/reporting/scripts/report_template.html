@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>{{ title }}</title>
+    <style>
+        body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif; margin: 2em; line-height: 1.6; }
+        h1, h2, h3 { color: #2c3e50; border-bottom: 2px solid #3498db; padding-bottom: 10px; margin-top: 40px;}
+        h1 { font-size: 2.5em; }
+        h2 { font-size: 2em; }
+        h3 { font-size: 1.5em; border-bottom: 1px solid #ccc; }
+        img { max-width: 90%; height: auto; display: block; margin: 20px auto; border: 1px solid #ddd; border-radius: 4px; box-shadow: 0 2px 4px rgba(0,0,0,0.1); }
+        table { border-collapse: collapse; margin: 20px 0; width: 80%; margin-left: auto; margin-right: auto; }
+        th, td { border: 1px solid #ddd; padding: 12px; text-align: left; }
+        th { background-color: #f2f2f2; font-weight: bold; }
+        .container { max-width: 1000px; margin: auto; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>{{ title }}</h1>
+        <p><em>Report generated on: {{ generation_date }}</em></p>
+
+        <h2>Time Series Analysis Summary</h2>
+        
+        <h3>Statistical Hierarchy of Variance (LMM)</h3>
+        <p>This plot shows the percentage of total variance in cell size attributed to different sources in the experiment. It provides a statistical breakdown of biological vs. technical variability.</p>
+        <img src="data:image/png;base64,{{ timeseries_lmm_plot }}">
+        
+        <h4>LMM Variance Components Data</h4>
+        {{ timeseries_lmm_csv_table | safe }}
+        
+        <h3>Rosette Dynamics Over Time</h3>
+        <p>The following plots visualize how rosette metrics change over the course of the timeseries experiment.</p>
+        
+        <h4>Rosette Cells per 1000 by Population</h4>
+        <p>This plot shows the calculated rate of rosette formation within the "small cell" and "large cell" populations, as determined by the Gaussian Mixture Model (GMM).</p>
+        <img src="data:image/png;base64,{{ timeseries_rosette_time_plot }}">
+
+        <h4>Rosette Percentage by Timepoint (Boxplot)</h4>
+        <p>This plot shows the distribution of rosette percentages (as a percentage of total cells) for each animal, grouped by timepoint.</p>
+        <img src="data:image/png;base64,{{ timeseries_rosette_boxplot }}">
+        
+        <h4>Rosette Cells per 1000 (Heatmap)</h4>
+        <p>This heatmap shows the average number of rosette cells per 1000 total cells, broken down by experimental replicate and timepoint.</p>
+        <img src="data:image/png;base64,{{ timeseries_rosette_heatmap }}">
+
+
+        <h2>Constant-Fed Analysis Summary</h2>
+        
+        <h3>Statistical Hierarchy of Variance (LMM)</h3>
+        <p>This plot shows the percentage of total variance in cell size attributed to different sources in the constant-fed experiment, analogous to the timeseries analysis.</p>
+        <img src="data:image/png;base64,{{ cf_lmm_plot }}">
+        
+        <h4>LMM Variance Components Data</h4>
+        {{ cf_lmm_csv_table | safe }}
+
+
+        <hr>
+        <h2>Inhibitor Analysis Summary</h2>
+        {% for inhibitor in inhibitors %}
+            <h3>Inhibitor: {{ inhibitor.name }}</h3>
+            
+            <h4>Inhibitor Effect Summary (Heatmap)</h4>
+            <p>This heatmap summarizes the average effect of the inhibitor compared to its control across all replicates and timepoints. Values represent the average percentage change in cell size or the change in population proportion (in percentage points).</p>
+            <img src="data:image/png;base64,{{ inhibitor.heatmap }}">
+            
+            <h4>Summary Data</h4>
+            {{ inhibitor.summary_table | safe }}
+            
+            <h4>Rosette Percentage: {{ inhibitor.name }} vs. Control</h4>
+            <p>This plot shows the distribution of rosette percentages per animal for the inhibitor compared to its corresponding control group.</p>
+            <img src="data:image/png;base64,{{ inhibitor.rosette_plot }}">
+        {% endfor %}
+    </div>
+</body>
+</html>

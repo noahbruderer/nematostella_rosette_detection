@@ -1,0 +1,23 @@
+[tool.poetry]
+name = "240108-ines"
+version = "0.1.0"
+description = ""
+authors = ["noahbruderer <noah.bruderer@gmail.com>"]
+readme = "README.md"
+
+[tool.poetry.dependencies]
+python = ">=3.10,<3.12"
+morphosnaker = {git = "https://github.com/noahbruderer/morphosnaker.git"}
+seaborn = "^0.13.2"
+statsmodels = "^0.14.4"
+scikit-image = "^0.19.0"
+scikit-posthocs = "^0.11.3"
+pymc = "4.0.0"
+scipy = "^1.15.2"
+jupyter = "^1.1.1"
+ipykernel = "^6.29.5"
+cairosvg = "^2.7.1"
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"

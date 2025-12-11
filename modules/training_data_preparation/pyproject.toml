@@ -1,0 +1,23 @@
+[project]
+name = "training-data-preparation"
+version = "0.1.0"
+description = ""
+authors = [
+    {name = "noahbruderer",email = "noah.bruderer@gmail.com"}
+]
+readme = "README.md"
+requires-python = ">=3.11,<3.12"
+dependencies = [
+    "h5py",
+    "numpy", 
+    "morphosnaker @ git+https://github.com/noahbruderer/morphosnaker.git",
+    "scipy",
+    "scikit-image",
+    "tqdm",
+    "matplotlib"
+]
+
+
+[build-system]
+requires = ["poetry-core>=2.0.0,<3.0.0"]
+build-backend = "poetry.core.masonry.api"

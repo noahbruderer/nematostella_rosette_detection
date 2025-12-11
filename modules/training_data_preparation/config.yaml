@@ -1,0 +1,74 @@
+# Training Data Preparation Module Configuration
+# ==============================================
+
+module: training_data_preparation
+description: "Prepare training data from rosette labels for model training"
+
+# Input/Output Paths (using template variables from global config)
+inputs:
+  input_dir: "{global[base_data_dir]}/rosette_id/data_preprocessing/rosette_labels"
+  
+outputs:
+  output_dir: "{global[output_base]}/training_data"
+  log_dir: "{global[output_base]}/logs/training_data_preparation"
+  
+# Processing Parameters (externalized from bash script)
+parameters:
+  # Cell filtering parameters
+  min_cell_size: 50
+  max_cell_size: 10000
+  min_rosette_size: 5
+  remove_border_cells: true
+  
+  # Image processing parameters
+  patch_size: 512
+  fill_holes: true
+  overlap_threshold: 0.5
+  max_aspect_ratio: 5.0
+  min_solidity: 0.3
+  
+  # Processing configuration
+  max_samples_per_batch: 50
+  memory_limit_gb: 16
+  
+# Execution environment
+environment:
+  poetry_project: "training_data_preparation"
+  main_script: "scripts/data_preparation.py"
+  python_version: ">=3.11,<3.14"
+  
+# Resource requirements
+resources:
+  threads: "{global[num_workers]}"
+  memory_gb: "{global[default_memory_gb]}"
+  time_limit_hours: 4
+  
+# Logging configuration
+logging:
+  level: "{global[log_level]}"
+  enable_performance_monitoring: true
+  log_sample_processing: true
+  
+# Quality control
+quality_control:
+  min_expected_samples: 10
+  max_failure_rate: 0.1
+  enable_validation: true
+  
+# Output file patterns (using $ for Snakemake runtime variables)
+# ... (rest of the file)
+
+# Output file patterns (static patterns - wildcards handled in rules.smk)
+output_patterns:
+  processed_data: "processed_data"
+  cell_properties: "cell_properties"
+  neighborhood_graph: "neighborhood_graph"
+  visualization: "summary"
+
+# ... (rest of the file)
+  
+# Expected input file structure
+input_patterns:
+  svg_dirs: "*_seg copy.svg"
+  mask_file: "$sample_name.tif"
+  rosette_file: "$sample_name.tif"

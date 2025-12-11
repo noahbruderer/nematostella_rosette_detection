@@ -1,0 +1,80 @@
+# Segmentation Post-Processing Module Configuration
+# ===============================================
+
+module: segmentation_post_processing
+description: "Post-process and curate raw segmentation masks from image_segmentation module"
+
+# Input/Output Paths (using template variables from global config)
+inputs:
+  # Input segmentation masks from image_segmentation module
+  segmentation_masks_dir: "{global[output_base]}/results/image_segmentation"
+  # Expected mask file pattern (produced by image_segmentation)
+  mask_file_pattern: "*_masks.tif"
+  
+outputs:
+  output_dir: "{global[output_base]}/results/segmentation_post_processing"
+  log_dir: "{global[output_base]}/logs/segmentation_post_processing"
+
+# Segmentation Curation Configuration
+curation:
+  # Cell size thresholds
+  min_cell_size: 50  # Minimum size threshold for creating new cells from background regions
+  max_small_cell_size: 50  # Maximum size for highlighting small cells in visualization
+  
+  # Processing options
+  verbose: true  # Whether to print processing information
+  create_visualizations: true  # Create HTML visualizations of the curation process
+  
+  # Quality control
+  save_statistics: true  # Save statistics about the curation process
+  save_qc_images: true  # Save quality control images
+
+# Output formats
+output_formats:
+  masks: ["tiff"]  # Save curated masks as TIFF
+  statistics: ["csv", "json"]  # Save curation statistics
+  visualizations: ["html"]  # Save interactive visualizations as HTML
+
+# Processing options
+processing:
+  multithreading: true  # Use multiple threads for faster processing
+  max_workers: "{global[num_workers]}"  # Number of worker threads
+  
+  # File naming conventions
+  input_suffix: "_masks"  # Expected suffix for input mask files
+  output_suffix: "_masks_curated"  # Suffix for output curated mask files
+
+# Quality control and visualization
+quality_control:
+  create_overview: true  # Create overview visualization
+  samples_per_overview: 9  # Number of samples to show in overview
+  save_before_after: true  # Save before/after comparison images
+  
+# Batch processing
+batch:
+  batch_size: 10  # Number of samples to process in parallel (limited by memory)
+  chunk_size: 10  # Number of samples to process before saving progress
+
+# Execution environment
+environment:
+  poetry_project: "segmentation-post-processing"  # Poetry project name from existing pyproject.toml
+  main_script: "curate_segmentation.py"  # Main script for curation
+
+# Resource requirements
+resources:
+  threads: "{global[num_workers]}"
+  memory_gb: "{global[default_memory_gb]}"
+  time_limit_hours: 2  # Per sample processing time limit
+  
+# Logging configuration  
+logging:
+  level: "{global[log_level]}"
+  save_processing_times: true
+  detailed_logging: true
+
+# Output file patterns
+output_patterns:
+  curated_masks: "SAMPLE_masks_curated.tif"
+  statistics: "SAMPLE_curation_stats.csv"
+  visualization: "SAMPLE_curation_vis.html"
+  qc_image: "SAMPLE_curation_qc.png"

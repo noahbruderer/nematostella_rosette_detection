@@ -1,0 +1,27 @@
+[project]
+name = "250815-rosette-model"
+version = "0.1.0"
+description = ""
+authors = [
+    {name = "noahbruderer",email = "noah.bruderer@gmail.com"}
+]
+readme = "README.md"
+requires-python = ">=3.11,<3.14"
+dependencies = [
+    "torch (>=2.8.0,<3.0.0)",
+    "matplotlib (>=3.10.5,<4.0.0)",
+    "scipy (>=1.16.1,<2.0.0)",
+    "h5py (>=3.14.0,<4.0.0)",
+    "albumentations (>=2.0.8,<3.0.0)",
+    "scikit-image (>=0.25.2,<0.26.0)",
+    "numpy (<2.0)",
+    "segmentation-models-pytorch (>=0.5.0,<0.6.0)",
+    "protobuf (<4)",
+    "tensorboard (>=2.20.0,<3.0.0)",
+    "pandas (>=2.3.3,<3.0.0)"
+]
+
+
+[build-system]
+requires = ["poetry-core>=2.0.0,<3.0.0"]
+build-backend = "poetry.core.masonry.api"

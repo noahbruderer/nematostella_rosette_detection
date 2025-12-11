@@ -1,0 +1,58 @@
+# Rosette Quantification Module Configuration
+# ==========================================
+
+# --- General Quantification Parameters ---
+quantification:
+  min_rosette_size: 10
+  max_rosette_size: 1000
+  normalization_factor: 1000
+
+# --- Time series experiment configuration ---
+timeseries_experiments:
+  enabled: true
+  input_dir: "{global[output_base]}/data/timeseries"
+  replicates: ["R1", "R2", "R3"]
+  expected_file_patterns:
+    segmentation: "_cells.tif"
+    rosettes_curated: "_rosettes.tif"
+
+# --- Inhibitor Experiment Configuration ---
+inhibitor_experiments:
+  QVD:
+    enabled: true
+    input_dir: "{global[output_base]}/data/inhibitors/QVD"
+    replicates: ["R1", "R2", "R3"]
+    expected_file_patterns:
+      segmentation: "_cells.tif"
+      rosettes_curated: "_rosettes_curated.tif"
+  AZD8055:
+    enabled: true
+    input_dir: "{global[output_base]}/data/inhibitors/AZD8055"
+    replicates: ["R1", "R2", "R3"]
+    expected_file_patterns:
+      segmentation: "_cells.tif"
+      rosettes_curated: "_rosettes_curated.tif"
+  ZVAD:
+    enabled: true
+    input_dir: "{global[output_base]}/data/inhibitors/ZVAD"
+    replicates: ["R1", "R2", "R3"]
+    expected_file_patterns:
+      segmentation: "_cells.tif"
+      rosettes_curated: "_rosettes_curated.tif"
+  U0126:
+    enabled: true
+    input_dir: "{global[output_base]}/data/inhibitors/U0126"
+    replicates: ["R1", "R2", "R3"]
+    expected_file_patterns:
+      segmentation: "_cells.tif"
+      rosettes_curated: "_rosettes_curated.tif"
+  staurosporine:
+    enabled: true
+    input_dir: "{global[output_base]}/data/inhibitors/staurosporine"
+    replicates: ["R1", "R2", "R3"]
+    expected_file_patterns:
+      segmentation: "_cells.tif"
+      rosettes_curated: "_rosettes_curated.tif"
+# Execution environment
+environment:
+  poetry_project: "rosette_quantification"

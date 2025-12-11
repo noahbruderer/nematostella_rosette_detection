@@ -1,0 +1,20 @@
+[tool.poetry]
+name = "rosette-pipeline"
+version = "0.1.0"
+description = "Snakemake-based rosette analysis pipeline"
+authors = ["Rosette Pipeline Team <noah.bruderer@gmail.com>"]
+readme = "README.md"
+
+[tool.poetry.dependencies]
+python = ">=3.11,<3.14"
+snakemake = "^8.0.0"
+pyyaml = "^6.0"
+click = "^8.0.0"
+pathlib = "^1.0.1"
+tensorboard = "^2.20.0"
+numpy = "^2.3.3"
+graphviz = "^0.21"
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"

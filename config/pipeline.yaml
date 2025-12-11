@@ -1,0 +1,104 @@
+# Rosette Analysis Pipeline Configuration
+# =====================================
+sample_metadata_file: "config/sample_metadata.tsv"
+# Set this environment variable: export ROSETTE_DATA_ROOT="/path/to/your/data"
+human_curated_rosette_data_root: "${ROSETTE_DATA_ROOT}"
+
+# --- Raw Data Root Directories (Used by metadata to build full paths) ---
+timeseries_raw_root: "${ROSETTE_DATA_ROOT}/timeseries/1_raw"
+inhibitor_raw_root: "${ROSETTE_DATA_ROOT}/inhibitors/1_raw"
+constant_fed_raw_root: "${ROSETTE_DATA_ROOT}/constant_fed"
+# Global pipeline settings
+curated_metadata_file: "config/curated_rosette_metadata.tsv"
+
+global:
+  # Set this environment variable: export ROSETTE_DATA_ROOT="/path/to/your/data"
+  human_curated_rosette_data_root: "${ROSETTE_DATA_ROOT}"
+  # Set this environment variable: export ROSETTE_WORK_DIR="/path/to/working/dir"
+  base_data_dir: "${ROSETTE_WORK_DIR}"
+  output_base: "${ROSETTE_WORK_DIR}/rosette_paper"
+  num_workers: 2
+  log_level: "INFO"
+  
+  # Resource settings
+  default_memory_gb: 4
+  default_threads: 1
+  
+  # Execution settings
+  dry_run: false
+  force_rerun: false
+# Module-specific configurations (references to module configs)
+modules:
+  image_segmentation:
+    config_file: "modules/image_segmentation/config.yaml"
+    enabled: true  # Will enable once we create the config
+    priority: 1
+    description: "Perform image segmentation using cellpose"
+    depends_on: []  # Independent module
+    
+  segmentation_post_processing:
+    config_file: "modules/segmentation_post_processing/config.yaml"
+    enabled: true  # Now enabled!
+    priority: 2
+    description: "Post-process segmentation results"
+    depends_on: ["image_segmentation"]
+
+  training_data_preparation:
+    config_file: "modules/training_data_preparation/config.yaml"
+    enabled: true
+    priority: 3
+    description: "Prepare training data from rosette labels"
+
+  model_training:
+    config_file: "modules/model_training/config.yaml"
+    enabled: true
+    priority: 5
+    description: "Train geometric rosette detection model using Attention UNet"
+    depends_on: ["training_data_preparation"]
+    
+  inference_rosettes:
+    config_file: "modules/inference_rosettes/config.yaml"
+    enabled: false
+    priority: 4
+    description: "Inference rosette detection using trained models"
+    depends_on: ["model_training", "segmentation_post_processing", "image_segmentation"]
+
+  rosette_quantification:
+      config_file: "modules/rosette_quantification/config.yaml"
+      enabled: true
+      description: "Quantify rosettes and perform downstream analysis"
+      run_timeseries_analysis: true   
+      run_inhibitor_analysis: true
+      run_constant_fed_analysis: true
+      
+  downstream_analysis:
+    config_file: "modules/downstream_analysis/config.yaml"
+    enabled: true
+    description: "Perform verification and statistical analysis on aggregated data"
+    run_timeseries_analysis: true
+    run_inhibitor_analysis: true
+    run_constant_fed_analysis: true
+
+  reporting:
+    config_file: "modules/reporting/config.yaml"
+    enabled: true
+    priority: 100  # High number to ensure it runs last
+    description: "Generate final HTML and PDF summary report"
+    depends_on: ["downstream_analysis"] # Depends on the analysis being complete
+    
+# Pipeline execution order (computed from priorities and dependencies)
+execution_order:
+  - training_data_preparation
+  - image_segmentation
+
+# Logging configuration
+logging:
+  level: "{global.log_level}"
+  format: "%(asctime)s - %(name)s - %(levelname)s - %(message)s"
+  log_dir: "{global.output_base}/logs"
+  
+# Output organization
+outputs:
+  base_dir: "{global.output_base}/results"
+  intermediate_dir: "{global.output_base}/intermediate"
+  final_dir: "{global.output_base}/final"

@@ -1,0 +1,97 @@
+# Image Segmentation Module Configuration
+# ======================================
+
+module: image_segmentation
+description: "Perform cell segmentation on microscopy images using Cellpose"
+
+# Input/Output Paths (using template variables from global config)
+inputs:
+  # Input raw images directory - adjust this path based on your data structure
+  raw_images_dir: "/Users/noahbruderer/Desktop/250707_R3_timeseries_inhibitors_CF/"
+  # Expected image file extensions
+  image_extensions: [".tif", ".tiff", ".png", ".jpg", ".jpeg"]
+  
+outputs:
+  output_dir: "{global[output_base]}/results/image_segmentation"
+  log_dir: "{global[output_base]}/logs/image_segmentation"
+
+# Cellpose Configuration
+cellpose:
+  # Model selection - can be built-in model or custom model path
+  model_type: "cyto3"
+  custom_model_path: "/Users/noahbruderer/local_work_files/nematostella_rosette_project/Timepoint_experiment_replicate_all/models/full_databse"  # Path to custom cellpose model file (.pth) - only used if model_type is "custom"
+  
+  # Segmentation parameters (adjusted for cpsam model)
+  diameter: null  # Expected cell diameter in pixels (cpsam works better with explicit diameter)
+  flow_threshold: 0.4  # Flow error threshold for masks
+  cellprob_threshold: 0.0  # Cell probability threshold
+  
+  # Processing options
+  use_gpu: true  # Use GPU acceleration if available
+  channels: [0, 0]  # [cytoplasm, nucleus] channels, [0,0] = grayscale
+  
+  # Advanced parameters
+  min_size: 15  # Minimum cell area in pixels
+  exclude_on_edges: false  # Exclude cells touching image edges
+  normalize: true  # Normalize images before segmentation
+  
+  # Quality control
+  save_outlines: true  # Save cell outline images
+  save_flows: false  # Save cellpose flow images (for debugging)
+
+# Image preprocessing
+preprocessing:
+  # Rescaling options
+  rescale_factor: 1.0  # Scale factor for images (1.0 = no scaling)
+  target_size: null  # Target image size [width, height] or null for no resizing
+  
+  # Filtering options
+  gaussian_blur: 0.0  # Gaussian blur sigma (0.0 = no blur)
+  median_filter: 0  # Median filter size (0 = no filter)
+  
+  # Contrast enhancement
+  contrast_enhancement: false  # Enable contrast enhancement
+  percentile_range: [1, 99]  # Percentile range for contrast stretching
+
+# Output formats
+output_formats:
+  masks: ["tiff", "npy"]  # Save masks as TIFF and NumPy arrays
+  outlines: ["png"]  # Save outline visualizations as PNG
+  statistics: ["csv", "json"]  # Save segmentation statistics
+
+# Quality control and visualization
+quality_control:
+  create_overview: true  # Create overview visualization
+  samples_per_overview: 9  # Number of samples to show in overview
+  save_individual_qc: true  # Save QC images for each sample
+  outline_color: "red"  # Color for cell outlines in visualizations
+  
+# Batch processing
+batch:
+  batch_size: 1  # Number of images to process in parallel (limited by memory)
+  chunk_size: 10  # Number of samples to process before saving progress
+
+# Execution environment
+environment:
+  poetry_project: "image_segmentation"
+  main_script: "segment_cells.py"
+
+# Resource requirements
+resources:
+  threads: "{global[num_workers]}"
+  memory_gb: "{global[default_memory_gb]}"
+  time_limit_hours: 4  # Per sample processing time limit
+  gpu_required: false  # Optional GPU acceleration
+
+# Logging configuration  
+logging:
+  level: "{global[log_level]}"
+  save_processing_times: true
+  detailed_logging: false
+
+# Output file patterns
+output_patterns:
+  masks: "SAMPLE_masks.tif"
+  outlines: "SAMPLE_outlines.png" 
+  statistics: "SAMPLE_stats.csv"
+  qc_image: "SAMPLE_qc.png"

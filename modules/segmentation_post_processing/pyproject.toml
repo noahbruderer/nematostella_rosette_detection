@@ -1,0 +1,23 @@
+[project]
+name = "segmentation-post-processing"
+version = "0.1.0"
+description = "Post processing the raw segmentation outputs"
+authors = [
+    {name = "noahbruderer",email = "noah.bruderer@gmail.com"}
+]
+readme = "README.md"
+requires-python = ">=3.11"
+dependencies = [
+    "numpy",
+    "scikit-image",
+    "tqdm", 
+    "plotly",
+    "scipy",
+    "h5py (>=3.14.0,<4.0.0)",
+    "matplotlib (>=3.10.5,<4.0.0)"
+]
+
+
+[build-system]
+requires = ["poetry-core>=2.0.0,<3.0.0"]
+build-backend = "poetry.core.masonry.api"

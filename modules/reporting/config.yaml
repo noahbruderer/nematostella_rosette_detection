@@ -1,0 +1,5 @@
+# modules/reporting/config.yaml
+
+# The reporting module uses the shared poetry environment
+environment:
+  poetry_project: "rosette_quantification"

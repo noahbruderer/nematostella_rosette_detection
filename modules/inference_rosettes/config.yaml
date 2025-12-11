@@ -1,0 +1,62 @@
+# Inference Rosettes Module Configuration
+# =====================================
+
+module: inference_rosettes
+description: "Inference rosette detection using trained Attention UNet models"
+
+# Input/Output Paths (using template variables from global config)
+inputs:
+  # Input processed data from segmentation_post_processing
+  processed_data_dir: "{global[output_base]}/results/segmentation_post_processing"
+  # Trained models from model_training
+  models_dir: "{global[output_base]}/results/model_training"
+  
+outputs:
+  output_dir: "{global[output_base]}/results/inference_rosettes"
+  log_dir: "{global[output_base]}/logs/inference_rosettes"
+
+# Model selection - which experiment/model to use for inference
+model_selection:
+  experiment_name: "champion_baseline"  # Which trained model to use
+  # Model parameters will be loaded from: models_dir/EXPERIMENT_NAME/config.json
+  # Model weights will be loaded from: models_dir/EXPERIMENT_NAME/best_model.pth
+
+# Inference Parameters (not model-dependent)
+inference:
+  batch_size: 8  # Can be different from training batch size
+  confidence_threshold: 0.5  # Threshold for binary predictions
+  patch_size: 512  # Patch size for sliding window inference
+  overlap: 256  # Overlap between patches in pixels
+  save_predictions: true  # Save raw prediction masks
+  save_visualizations: true  # Save overlay visualizations
+  
+# Inference targets - which samples/datasets to run inference on
+targets:
+  # Can specify specific samples or use "all" to infer on all available data
+  samples: "all"  # or list specific sample IDs
+  
+# Visualization settings
+visualization:
+  overlay_alpha: 0.3  # Transparency of prediction overlay
+  colormap: "hot"  # Colormap for prediction visualization
+  
+# Resource requirements
+resources:
+  threads: "{global[num_workers]}"
+  memory_gb: "{global[default_memory_gb]}"
+  time_limit_hours: 6
+
+# Execution environment
+environment:
+  poetry_project: "inference_rosettes"
+  main_script: "inference.py"
+
+# Logging configuration
+logging:
+  level: "{global[log_level]}"
+
+# Output file patterns
+output_patterns:
+  predictions: "predictions_SAMPLE.h5"
+  visualizations: "visualization_SAMPLE.png"
+  metrics: "inference_metrics.csv"

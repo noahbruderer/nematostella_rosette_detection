@@ -1,0 +1,28 @@
+# Downstream Analysis Module Configuration
+# =======================================
+inputs:
+  # 1. Timeseries Input
+  # Pointing to the main output of the timeseries quantification rule
+  timeseries_combined_data: "{global[output_base]}/results/rosette_quantification/combined_timeseries_cell_properties.csv"
+
+  # 2. Constant Fed Input (NEW)
+  constant_fed_combined_data: "{global[output_base]}/results/rosette_quantification/combined_constant_fed_cell_properties.csv"
+
+  # 3. Inhibitor Inputs
+  # NOTE: The quantification module produces ONE combined file for all inhibitors.
+  # The downstream scripts handle filtering by drug name. 
+  # So, we point ALL keys to the SAME combined file.
+  inhibitor_inputs:
+    QVD: "{global[output_base]}/results/rosette_quantification/combined_inhibitor_cell_properties.csv"
+    AZD8055: "{global[output_base]}/results/rosette_quantification/combined_inhibitor_cell_properties.csv"
+    ZVAD: "{global[output_base]}/results/rosette_quantification/combined_inhibitor_cell_properties.csv"
+    U0126: "{global[output_base]}/results/rosette_quantification/combined_inhibitor_cell_properties.csv"
+    STAUROSPORINE: "{global[output_base]}/results/rosette_quantification/combined_inhibitor_cell_properties.csv"
+outputs:
+  timeseries_output_dir: "{global[output_base]}/results/downstream_analysis_timeseries"
+  inhibitor_output_dir: "{global[output_base]}/results/downstream_analysis_inhibitors"
+  # New output dir for Constant Fed
+  constant_fed_output_dir: "{global[output_base]}/results/downstream_analysis_constant_fed"
+
+environment:
+  poetry_project: "rosette_quantification"
