@@ -116,10 +116,28 @@ python -m snakemake show_config_glob
 ## Model Performance
 
 The pipeline uses the **Champion Baseline** model with:
-- **F1 Score**: 61.33%
-- **IoU**: 50.91% 
 - **Architecture**: Attention UNet
-- **Input**: 2-channel (cell boundaries + cell masks)
+- **Input**: 2 channels (binary cell boundary maps + morphologically dilated boundaries)
+
+### Pixel-level metrics (validation set, 54 images)
+- **F1 Score**: 61.33%
+- **IoU**: 50.91%
+- **Recall**: 64.0%
+
+### Event-level metrics (269 GT rosette instances)
+- **Event-level recall** (≥1 predicted pixel inside GT rosette, threshold 0.5): **88.8%** (239/269)
+- **Completely missed** (zero heatmap signal): 11.2% (30/269)
+
+| Coverage bin | N rosettes | % | Cumulative % |
+|---|---|---|---|
+| 0% — no predicted pixels | 30 | 11.2% | 11.2% |
+| 0–20% (weak signal) | 30 | 11.2% | 22.3% |
+| 20–40% | 12 | 4.5% | 26.8% |
+| 40–60% | 15 | 5.6% | 32.3% |
+| 60–80% | 47 | 17.5% | 49.8% |
+| 80–100% | 135 | 50.2% | 100.0% |
+
+> Note: pixel-level recall (0.64) reflects boundary imprecision in detected rosettes, not missed events. Event-level recall (0.888) is the operationally relevant metric for the human-in-the-loop workflow.
 
 ## Configuration
 
